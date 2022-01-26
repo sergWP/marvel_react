@@ -1,7 +1,9 @@
  class MarverService {
+    // доступы
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     _apiKey = 'apikey=6022a09bcb419514d68593ea1c86ee27';
 
+    // функция-запрос
     getResource = async (url) => {
         let res = await fetch(url);
         if (!res.ok) {
@@ -11,12 +13,27 @@
         return await res.json();
     }
 
-    getAllCharacters = () => {
-        return this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+    // получаем данные 9 персонажей
+    getAllCharacters = async () => {
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+        return res.data.results.map(this._transformCharacter);
     }
 
-    getCharacter = (id) => {
-        return this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
+    // получем данные 1го персонажа
+    getCharacter = async (id) => {
+        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
+        return this._transformCharacter(res.data.results[0]);
+    }
+
+    // трансформируем входящие данные в нужный нам вид
+    _transformCharacter = (char) => {
+        return {
+            name: char.name,
+            description: char.description,
+            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+            homepage: char.urls[0].url,
+            wiki: char.urls[1].url
+        }
     }
  }
 

@@ -27,9 +27,11 @@
 
     // трансформируем входящие данные в нужный нам вид
     _transformCharacter = (char) => {
+        // check description has text
+        const description = char.description ? char.description : 'No description';
         return {
             name: char.name,
-            description: char.description,
+            description: description.length > 200 ? `${(description).substr(0, 200)}...` : description, // check length
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url

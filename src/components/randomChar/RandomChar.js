@@ -9,7 +9,7 @@ import mjolnir from '../../resources/img/mjolnir.png';
 class RandomChar extends Component {
     constructor(props) {
         super(props);
-        this.updateChar(); // неправильно
+        console.log('constructor');
     }
 
     // стейт
@@ -21,6 +21,22 @@ class RandomChar extends Component {
 
     // новый экземпляр класса
     marvelService = new MarverService();
+
+    // componentDidMount() вызывается сразу после монтирования (то есть, вставки компонента в DOM). 
+    // В этом методе должны происходить действия, которые требуют наличия DOM-узлов. 
+    // Это хорошее место для создания сетевых запросов.
+    // https://ru.reactjs.org/docs/react-component.html#componentdidmount
+    componentDidMount() {
+        console.log('Mount');
+        this.updateChar();
+    }
+
+    // componentWillUnmount() вызывается непосредственно перед размонтированием и удалением компонента.
+    // В этом методе выполняется необходимый сброс: отмена таймеров, сетевых запросов и подписок, созданных в componentDidMount()
+    // https://ru.reactjs.org/docs/react-component.html#componentwillunmount
+    componentWillUnmount() {
+        console.log('Unmount');
+    }
 
     onCharLoaded = (char) => {
         this.setState({

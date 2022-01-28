@@ -16,7 +16,8 @@ class RandomChar extends Component {
     state = {
         char: {},
         loading: true,
-        error: false
+        error: false,
+        thumbStyle: ''
     }
 
     // новый экземпляр класса
@@ -27,8 +28,13 @@ class RandomChar extends Component {
     // Это хорошее место для создания сетевых запросов.
     // https://ru.reactjs.org/docs/react-component.html#componentdidmount
     componentDidMount() {
-        console.log('Mount');
+        console.log('componentDidMount');
         this.updateChar();
+    }
+
+    // https://ru.reactjs.org/docs/react-component.html#componentdidupdate
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
     }
 
     // componentWillUnmount() вызывается непосредственно перед размонтированием и удалением компонента.
@@ -39,10 +45,20 @@ class RandomChar extends Component {
     }
 
     onCharLoaded = (char) => {
+        console.log('onCharLoaded');
+        let style = '';
+       
+        // проверяем, доступна ли картинка
+        char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+            ? style = 'contain'
+            : style = ''
+
+        // обновляем стейт
         this.setState({
             char,
-            loading: false
-        }) // обновляем стейт
+            loading: false,
+            thumbStyle: style
+        })
     }
 
     // метод для ошибки если нет персонажа под таким ID
@@ -55,6 +71,7 @@ class RandomChar extends Component {
 
     // обновить данные персонажа
     updateChar = () => {
+        console.log('updateChar');
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); // рандом в диапазоне
         this.marvelService
             .getCharacter(id) // получем данные 1го персонажа
@@ -63,10 +80,10 @@ class RandomChar extends Component {
     }
     
     render() {
-        const {char, loading, error} = this.state;
+        const {char, loading, error, thumbStyle} = this.state;
         const errorMessage = error ? <ErrorMsg/> : null;
         const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? <View char={char}/> : null;
+        const content = !(loading || error) ? <View char={char} thumbStyle={thumbStyle}/> : null;
 
         return (
             <div className="randomchar">
@@ -91,12 +108,11 @@ class RandomChar extends Component {
     }
 }
 
-const View = ({char}) => {
-
+const View = ({char, thumbStyle}) => {
     const {name, thumbnail, description, homepage, wiki} = char;
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={thumbStyle ? {objectFit: thumbStyle} : null}/>
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">{description}</p>

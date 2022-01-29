@@ -30,6 +30,7 @@
         // check description has text
         const description = char.description ? char.description : 'No description';
         return {
+            id: char.id,
             name: char.name,
             description: description.length > 200 ? `${(description).substr(0, 200)}...` : description, // check length
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,

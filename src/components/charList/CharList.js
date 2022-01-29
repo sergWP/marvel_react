@@ -32,7 +32,7 @@ class CharList extends Component {
         const {chars, loading} = this.state;
         // проверяем, загрузились данные в стейт или нет
         // выводит только если в стейде есть данные
-        const content = !(loading) ? chars.map((item, idx) => <View key={idx} char={item}/>) : null;
+        const content = !(loading) ? chars.map(item => <View key={item.id} char={item}/>) : null;
         return (
             <div className="char__list">
                 <ul className="char__grid">{content}</ul>

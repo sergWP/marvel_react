@@ -86,6 +86,16 @@ class CharInfo extends Component {
 
 const View = ({char, thumbStyle}) => {
     const {thumbnail, name, description, homepage, wiki, comics} = char;
+    const comicsItems = comics.map((item, idx) => {
+                            // eslint-disable-next-line
+                            if (idx >= 10) return;
+                            return (
+                                <li key={idx} className="char__comics-item">
+                                    {item.name}
+                                </li>
+                            )
+                        });
+
     return (
         <>
             <div className="char__basics">
@@ -105,16 +115,7 @@ const View = ({char, thumbStyle}) => {
             <div className="char__descr">{description}</div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                {
-                    comics.map((item, idx) => {
-                        return (
-                            <li key={idx} className="char__comics-item">
-                                {item.name}
-                            </li>
-                        )
-                    })
-                }
-                
+                {comicsItems.length > 0 ? comicsItems : 'This character is not used in comics.'}
             </ul>
         </>
     )

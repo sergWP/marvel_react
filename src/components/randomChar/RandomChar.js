@@ -61,14 +61,6 @@ class RandomChar extends Component {
         })
     }
 
-    // метод для ошибки если нет персонажа под таким ID
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        });
-    }
-
     // обновить данные персонажа
     updateChar = () => {
         console.log('updateChar');
@@ -77,6 +69,14 @@ class RandomChar extends Component {
             .getCharacter(id) // получем данные 1го персонажа
             .then(this.onCharLoaded) // обновляем стейт
             .catch(this.onError); // вызов метода при ошибке
+    }
+
+    // метод для ошибки если нет персонажа под таким ID
+    onError = () => {
+        this.setState({
+            loading: false,
+            error: true
+        });
     }
     
     render() {

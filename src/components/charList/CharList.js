@@ -4,8 +4,11 @@ import './charList.scss';
 
 class CharList extends Component {
     state = {
-        chars: {},
-        loading: true
+        charList: {},
+        loading: true,
+        error: false,
+        newItemLoading: false,
+        offset: 210
     }
 
     // новый экземпляр класса
@@ -18,19 +21,34 @@ class CharList extends Component {
         this.onRequest();
     }
 
+    // запрос героев с офсетом
     onRequest = (offest) => {
+        this.onCharListLoading();
         this.marvelService
             .getAllCharacters(offest)
-            .then(this.onCharsLoaded) // обновляем стейт
+            .then(this.onCharsLoaded) // обновляем стейт - результат запроса
+            .catch(this.onError)
     }
 
-    onCharsLoaded = (chars) => {
+    // герои грузятся
+    onCharListLoading = () => {
         this.setState({
-            chars,
-            loading: false
+            newItemLoading: true
         })
     }
 
+    // герои загрузились
+    // записываем в стейт
+    onCharsLoaded = (newChars) => {
+        this.setState(({offset, charList}) => ({
+            charList: [...charList, ...newChars],
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9
+        }))
+    }
+
+    // ошибка
     onError = () => {
         this.setState({
             error: true,
@@ -39,12 +57,12 @@ class CharList extends Component {
     }
 
     render() {
-        const {chars, loading} = this.state;
+        const {charList, loading, newItemLoading, offset} = this.state;
 
         // проверяем, загрузились данные в стейт или нет
         // выводит только если в стейде есть данные
         const content = !(loading) 
-            ? chars.map(item => 
+            ? charList.map(item => 
                 <li key={item.id} onClick={() => {this.props.onCharSelected(item.id)}} className="char__item">
                     <img src={item.thumbnail} alt="abyss"/>
                     <div className="char__name">{item.name}</div>
@@ -55,7 +73,10 @@ class CharList extends Component {
         return (
             <div className="char__list">
                 <ul className="char__grid">{content}</ul>
-                <button className="button button__main button__long">
+                <button 
+                    onClick={() => this.onRequest(offset)}
+                    disabled={newItemLoading}
+                    className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
             </div>

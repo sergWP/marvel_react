@@ -2,6 +2,7 @@
     // доступы
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     _apiKey = 'apikey=6022a09bcb419514d68593ea1c86ee27';
+    _baseOffset = 210;
 
     // функция-запрос
     getResource = async (url) => {
@@ -14,8 +15,9 @@
     }
 
     // получаем данные 9 персонажей
-    getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=210&${this._apiKey}`);
+    // присваиваем базовый оффсет если параметр не передан
+    getAllCharacters = async (offset = this._baseOffset) => {
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
         return res.data.results.map(this._transformCharacter);
     }
 

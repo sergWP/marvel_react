@@ -8,12 +8,21 @@ class CharList extends Component {
         loading: true
     }
 
-    componentDidMount() {
-        this.updateChars();
-    }
-
     // новый экземпляр класса
     marvelService = new MarverService();
+
+    // оптимизация
+    // вызываем onRequest без офсета (не дублируем код)
+    // офсет по умолчанию в MarverService
+    componentDidMount() {
+        this.onRequest();
+    }
+
+    onRequest = (offest) => {
+        this.marvelService
+            .getAllCharacters(offest)
+            .then(this.onCharsLoaded) // обновляем стейт
+    }
 
     onCharsLoaded = (chars) => {
         this.setState({
@@ -22,10 +31,11 @@ class CharList extends Component {
         })
     }
 
-    updateChars = () => {
-        this.marvelService
-            .getAllCharacters()
-            .then(this.onCharsLoaded) // обновляем стейт
+    onError = () => {
+        this.setState({
+            error: true,
+            loading: false
+        })
     }
 
     render() {

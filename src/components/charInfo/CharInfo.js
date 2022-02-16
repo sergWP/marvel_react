@@ -1,50 +1,39 @@
-import { Component } from 'react/cjs/react.production.min';
+import { useState, useEffect } from "react";
+import PropTypes from 'prop-types';
+
 import MarverService from '../../services/MarvelService';
 import Spinner from '../spinner/spinner';
 import ErrorMsg from '../errorMsg/errorMsg';
 import Skeleton from '../skeleton/Skeleton';
 import './charInfo.scss';
 
-class CharInfo extends Component {
+const CharInfo = (props) => {
 
-    // стейт
-    state = {
-        char: null,
-        loading: false,
-        error: false,
-        thumbStyle: ''
-    }
+    const [char, setChar] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [thumbStyle, setThumbStyle] = useState('');
 
     // новый экземпляр класса
-    marvelService = new MarverService();
-
-    componenDidMount() {
-        this.updateChar();
-    }
+    const marvelService = new MarverService();
 
     // запускаем updateChar() если charId в пропсах изменился
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar()
-        }
-    }
+    useEffect(() => {
+        updateChar();
+    }, [props.charId]);
 
-    updateChar = () => {
-        const {charId} = this.props;
-        if(!charId) {
+    const updateChar = () => {
+        if(!props.charId) {
             return
         } else {
-            this.marvelService
-                .getCharacter(charId)
-                .then(this.onCharLoaded)
-                .catch(this.onError)
+            marvelService
+                .getCharacter(props.charId)
+                .then(onCharLoaded)
+                .catch(onError)
         }
-
-        // для теста errorBoundary
-        // this.foo.bar = 0;
     }
 
-    onCharLoaded = (char) => {
+    const onCharLoaded = (char) => {
         let style = '';
        
         // проверяем, доступна ли картинка
@@ -53,38 +42,31 @@ class CharInfo extends Component {
             : style = ''
 
         // обновляем стейт
-        this.setState({
-            char,
-            loading: false,
-            thumbStyle: style
-        })
+        setChar(char);
+        setLoading(false);
+        setThumbStyle(thumbStyle => style);
     }
 
     // метод для ошибки если нет персонажа под таким ID
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        });
+    const onError = () => {
+        setError(true);
+        setLoading(false);
     }
 
-    render() {
-        const {char, loading, error, thumbStyle} = this.state;
+    const skeleton = char || loading || error ? null : <Skeleton/>;
+    const errorMessage = error ? <ErrorMsg/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error || !char) ? <View char={char} thumbStyle={thumbStyle}/> : null;
 
-        const skeleton = char || loading || error ? null : <Skeleton/>;
-        const errorMessage = error ? <ErrorMsg/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char} thumbStyle={thumbStyle}/> : null;
+    return (
+        <div className="char__info">
+            {skeleton}
+            {errorMessage}
+            {spinner}
+            {content}
+        </div>
+    )
 
-        return (
-            <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
-            </div>
-        )
-    }
 }
 
 const View = ({char, thumbStyle}) => {
@@ -122,6 +104,10 @@ const View = ({char, thumbStyle}) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
 }
 
 export default CharInfo;

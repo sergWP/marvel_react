@@ -11,7 +11,7 @@ const CharList = (props) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [newItemLoading, setNewItemLoading] = useState(false);
-    const [offset, setOffset] = useState(210);
+    const [offset, setOffset] = useState(510);
     const [charEnded, setCharEnded] = useState(false);
 
     // новый экземпляр класса
@@ -32,7 +32,7 @@ const CharList = (props) => {
 
     // герои грузятся
     const onCharListLoading = () => {
-        setNewItemLoading(true)
+        setNewItemLoading(true);
     }
 
     // герои загрузились
@@ -54,7 +54,7 @@ const CharList = (props) => {
     // ошибка
     const onError = () => {
         setError(true);
-        setLoading(false);
+        setLoading(loading => false);
     }
 
     const itemRefs = useRef([]);
@@ -123,7 +123,12 @@ const CharList = (props) => {
             {errorMessage}
             {spinner}
             {content}
-            <button className="button button__main button__long">
+            <button 
+                className="button button__main button__long"
+                disabled={newItemLoading}
+                style={{'display': charEnded ? 'none' : 'block'}}
+                onClick={() => onRequest(offset)}
+                >
                 <div className="inner">load more</div>
             </button>
         </div>

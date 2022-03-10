@@ -10,7 +10,7 @@ import './charInfo.scss';
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
-    const {loading, error, getCharacter} = useMarverService();
+    const {loading, error, getCharacter, clearError} = useMarverService();
     const [thumbStyle, setThumbStyle] = useState('');
 
     // запускаем updateChar() если charId в пропсах изменился
@@ -22,6 +22,7 @@ const CharInfo = (props) => {
         if(!props.charId) {
             return
         } else {
+            clearError();
             getCharacter(props.charId)
                 .then(onCharLoaded)
         }

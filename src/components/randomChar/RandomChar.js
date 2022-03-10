@@ -12,7 +12,7 @@ const RandomChar = () => {
     const [thumbStyle, setThumbStyle] = useState('');
 
     // новый экземпляр класса
-    const {loading, error, getCharacter} = useMarverService();
+    const {loading, error, getCharacter, clearError} = useMarverService();
 
     useEffect(() => {
         updateChar();
@@ -38,6 +38,7 @@ const RandomChar = () => {
 
     // обновить данные персонажа
     const updateChar = () => {
+        clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); // рандом в диапазоне
         getCharacter(id) // получем данные 1го персонажа
             .then(onCharLoaded) // обновляем стейт

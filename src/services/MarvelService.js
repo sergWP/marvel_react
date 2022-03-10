@@ -2,7 +2,7 @@
  
  const useMarverService = () => {
 
-    const {loading, request, error} = useHttp();
+    const {loading, request, error, clearError} = useHttp();
 
     // доступы
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
@@ -37,7 +37,7 @@
         }
     }
 
-    return {loading, error, getAllCharacters, getCharacter}
+    return {loading, error, clearError, getAllCharacters, getCharacter}
 
  }
 

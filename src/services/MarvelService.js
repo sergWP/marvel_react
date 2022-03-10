@@ -1,34 +1,29 @@
- class MarverService {
+ import {useHttp} from '../hooks/http.hooks';
+ 
+ const useMarverService = () => {
+
+    const {loading, request, error} = useHttp();
+
     // доступы
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    _apiKey = 'apikey=6022a09bcb419514d68593ea1c86ee27';
-    _baseOffset = 210;
-
-    // функция-запрос
-    getResource = async (url) => {
-        let res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-
-        return await res.json();
-    }
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    const _apiKey = 'apikey=6022a09bcb419514d68593ea1c86ee27';
+    const _baseOffset = 210;
 
     // получаем данные 9 персонажей
     // присваиваем базовый оффсет если параметр не передан
-    getAllCharacters = async (offset = this._baseOffset) => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-        return res.data.results.map(this._transformCharacter);
+    const getAllCharacters = async (offset = _baseOffset) => {
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter);
     }
 
     // получем данные 1го персонажа
-    getCharacter = async (id) => {
-        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharacter(res.data.results[0]);
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacter(res.data.results[0]);
     }
 
     // трансформируем входящие данные в нужный нам вид
-    _transformCharacter = (char) => {
+    const _transformCharacter = (char) => {
         // check description has text
         const description = char.description ? char.description : 'No description';
         return {
@@ -41,6 +36,9 @@
             comics: char.comics.items
         }
     }
+
+    return {loading, error, getAllCharacters, getCharacter}
+
  }
 
- export default MarverService
+ export default useMarverService;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
-import MarverService from '../../services/MarvelService';
+import useMarverService from '../../services/MarvelService';
 import Spinner from '../spinner/spinner';
 import ErrorMsg from '../errorMsg/errorMsg';
 import Skeleton from '../skeleton/Skeleton';
@@ -10,12 +10,8 @@ import './charInfo.scss';
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const {loading, error, getCharacter} = useMarverService();
     const [thumbStyle, setThumbStyle] = useState('');
-
-    // новый экземпляр класса
-    const marvelService = new MarverService();
 
     // запускаем updateChar() если charId в пропсах изменился
     useEffect(() => {
@@ -26,10 +22,8 @@ const CharInfo = (props) => {
         if(!props.charId) {
             return
         } else {
-            marvelService
-                .getCharacter(props.charId)
+            getCharacter(props.charId)
                 .then(onCharLoaded)
-                .catch(onError)
         }
     }
 
@@ -43,14 +37,7 @@ const CharInfo = (props) => {
 
         // обновляем стейт
         setChar(char);
-        setLoading(false);
         setThumbStyle(thumbStyle => style);
-    }
-
-    // метод для ошибки если нет персонажа под таким ID
-    const onError = () => {
-        setError(true);
-        setLoading(false);
     }
 
     const skeleton = char || loading || error ? null : <Skeleton/>;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'; 
 import Spinner from '../spinner/spinner';
 import ErrorMsg from '../errorMsg/errorMsg';
-import MarverService from '../../services/MarvelService';
+import useMarverService from '../../services/MarvelService';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
@@ -9,12 +9,10 @@ import mjolnir from '../../resources/img/mjolnir.png';
 const RandomChar = () => {
 
     const [char, setChar] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [thumbStyle, setThumbStyle] = useState('');
 
     // новый экземпляр класса
-    const marvelService = new MarverService();
+    const {loading, error, getCharacter} = useMarverService();
 
     useEffect(() => {
         updateChar();
@@ -35,33 +33,19 @@ const RandomChar = () => {
 
         // обновляем стейт
         setChar(char);
-        setLoading(false);
         setThumbStyle(thumbStyle => style);
-    }
-
-    const onCharLoading = () => {
-        setLoading(true);
     }
 
     // обновить данные персонажа
     const updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000); // рандом в диапазоне
-        marvelService
-            .getCharacter(id) // получем данные 1го персонажа
+        getCharacter(id) // получем данные 1го персонажа
             .then(onCharLoaded) // обновляем стейт
-            .catch(onError); // вызов метода при ошибке
-    }
-
-    // метод для ошибки если нет персонажа под таким ID
-    // ошибка
-    const onError = () => {
-        setError(true);
-        setLoading(false);
     }
     
     const errorMessage = error ? <ErrorMsg/> : null;
     const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? <View char={char} thumbStyle={thumbStyle}/> : null;
+    const content = !(loading || error || !char) ? <View char={char} thumbStyle={thumbStyle}/> : null;
 
     return (
         <div className="randomchar">

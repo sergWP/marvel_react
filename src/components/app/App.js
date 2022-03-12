@@ -4,6 +4,7 @@ import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import ComicsList from "../comicsList/ComicsList";
+import SingleComic from "../singleComic/SingleComic";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/errorBoundary";
 
@@ -26,9 +27,12 @@ const App = () => {
                 <ErrorBoundary>
                     <RandomChar/>
                 </ErrorBoundary>
-                */}
 
                 <ComicsList/>
+                */}
+
+                <SingleComic/>
+                
                 {/* 
                 <div className="char__content">
                     <ErrorBoundary>

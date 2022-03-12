@@ -38,25 +38,34 @@
         }
     }
 
-        // получем комиксы
-        const getComics = async (offset = _comicsOffset) => {
-            const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
-            return res.data.results.map(_transformComics);
-        }
-    
-        // трансформируем входящие данные в нужный нам вид
-        const _transformComics = (char) => {
-            // check description has text
-            const price = char.prices[0].price ? `$${char.prices[0].price}` : 'Not avalible';
-            return {
-                id: char.id,
-                title: char.title,
-                price: price,
-                thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension
-            }
-        }
+    // получем комиксы
+    const getComics = async (offset = _comicsOffset) => {
+        const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformComics);
+    }
 
-    return {loading, error, clearError, getAllCharacters, getCharacter, getComics}
+    // получем данные 1го комикса
+    const getComic = async (id) => {
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComics(res.data.results[0]);
+    }
+
+    // трансформируем входящие данные в нужный нам вид
+    const _transformComics = (char) => {
+        // check description has text
+        const price = char.prices[0].price ? `$${char.prices[0].price}` : 'Not avalible';
+        return {
+            id: char.id,
+            title: char.title,
+            price: price,
+            pageCount: char.pageCount,
+            language: char.textObjects[0].language,
+            description: char.description,
+            thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension
+        }
+    }
+
+    return {loading, error, clearError, getAllCharacters, getCharacter, getComics, getComic}
 
  }
 

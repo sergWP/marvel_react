@@ -1,7 +1,9 @@
 import { useState } from "react";
+import AppBanner from "../appBanner/AppBanner";
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
+import ComicsList from "../comicsList/ComicsList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/errorBoundary";
 
@@ -19,9 +21,15 @@ const App = () => {
         <div className="app">
             <AppHeader/>
             <main>
+                <AppBanner/>
+                {/*
                 <ErrorBoundary>
                     <RandomChar/>
                 </ErrorBoundary>
+                */}
+
+                <ComicsList/>
+                {/* 
                 <div className="char__content">
                     <ErrorBoundary>
                         <CharList onCharSelected={onCharSelected}/>
@@ -30,6 +38,7 @@ const App = () => {
                         <CharInfo charId={selectedChar}/>
                     </ErrorBoundary>
                 </div>
+                */}
                 <img className="bg-decoration" src={decoration} alt="vision"/>
             </main>
         </div>

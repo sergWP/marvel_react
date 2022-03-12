@@ -8,6 +8,7 @@
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey = 'apikey=6022a09bcb419514d68593ea1c86ee27';
     const _baseOffset = 210;
+    const _comicsOffset = 0;
 
     // получаем данные 9 персонажей
     // присваиваем базовый оффсет если параметр не передан
@@ -37,7 +38,25 @@
         }
     }
 
-    return {loading, error, clearError, getAllCharacters, getCharacter}
+        // получем комиксы
+        const getComics = async (offset = _comicsOffset) => {
+            const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
+            return res.data.results.map(_transformComics);
+        }
+    
+        // трансформируем входящие данные в нужный нам вид
+        const _transformComics = (char) => {
+            // check description has text
+            const price = char.prices[0].price ? `$${char.prices[0].price}` : 'Not avalible';
+            return {
+                id: char.id,
+                title: char.title,
+                price: price,
+                thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension
+            }
+        }
+
+    return {loading, error, clearError, getAllCharacters, getCharacter, getComics}
 
  }
 

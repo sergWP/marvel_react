@@ -59,7 +59,7 @@
             title: char.title,
             price: price,
             pageCount: char.pageCount,
-            language: char.textObjects[0].language,
+            language: char.textObjects.language || 'en-us',
             description: char.description,
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension
         }

@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 import { useState, useEffect } from "react";
 
 import './singleComic.scss';
@@ -66,7 +67,7 @@ const View = ({comic, thumbStyle}) => {
                 <p className="single-comic__descr">Language: {language}</p>
                 <div className="single-comic__price">{price}</div>
             </div>
-            <a href="#" className="single-comic__back">Back to all</a>
+            <Link to=".." className="single-comic__back">Back to all</Link>
         </>
     )
 }

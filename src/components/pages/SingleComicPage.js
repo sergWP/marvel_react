@@ -1,25 +1,27 @@
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import { useState, useEffect } from "react";
 
-import './singleComic.scss';
+import './SingleComicPage.scss';
 import useMarverService from '../../services/MarvelService';
 import Spinner from '../spinner/spinner';
 import ErrorMsg from '../errorMsg/errorMsg';
 
-const SingleComic = (props) => {
+const SingleComicPage = () => {
+
+    const {comicId} = useParams();
 
     const [comic, setComic] = useState(null);
     const [thumbStyle, setThumbStyle] = useState('');
 
-    const {loading, error, getComic} = useMarverService();
+    const {loading, error, getComic, clearError} = useMarverService();
 
     useEffect(() => {
-        updateComic(props.id);
-    }, []);
+        updateComic();
+    }, [comicId]);
 
-    const updateComic = (comicId) => {
-        const id = comicId ? comicId : 125;
-        getComic(id) // получем данные 1го персонажа
+    const updateComic = () => {
+        clearError();
+        getComic(comicId) // получем данные 1го персонажа
             .then(onComicLoaded) // обновляем стейт
     }
 
@@ -67,9 +69,9 @@ const View = ({comic, thumbStyle}) => {
                 <p className="single-comic__descr">Language: {language}</p>
                 <div className="single-comic__price">{price}</div>
             </div>
-            <Link to=".." className="single-comic__back">Back to all</Link>
+            <Link to="/comics" className="single-comic__back">Back to all</Link>
         </>
     )
 }
 
-export default SingleComic;
+export default SingleComicPage;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import useMarverService from '../../services/MarvelService';
@@ -60,14 +61,15 @@ const CharInfo = (props) => {
 const View = ({char, thumbStyle}) => {
     const {thumbnail, name, description, homepage, wiki, comics} = char;
     const comicsItems = comics.map((item, idx) => {
-                            // eslint-disable-next-line
-                            if (idx >= 10) return;
-                            return (
-                                <li key={idx} className="char__comics-item">
-                                    {item.name}
-                                </li>
-                            )
-                        });
+        const getComicsId = item.resourceURI.match(/\d/g).join('').slice(1);
+        // eslint-disable-next-line
+        if (idx >= 10) return;
+        return (
+            <li key={idx} className="char__comics-item">
+                <Link to={`/comics/${getComicsId}`}>{item.name}</Link>
+            </li>
+        )
+    });
 
     return (
         <>
